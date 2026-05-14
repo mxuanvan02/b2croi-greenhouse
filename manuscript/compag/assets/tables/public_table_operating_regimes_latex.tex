@@ -1,0 +1,16 @@
+\begin{table}[t]
+\centering
+\caption{Full-window operating-regime comparison against error-triggered scheduling over 24 paired burst-loss stress cases. Count columns report cases where the B2CRoI-H regime is better; delta columns are regime minus comparator. Bold values mark the strongest operating point within each metric column.}
+\label{tab:operating_regimes}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lrrrrrrrr}
+\hline
+Regime & Loss & Missed & Fair. & RMSE & $\Delta$Loss & $\Delta$Missed (pp) & $\Delta$RMSE & $\Delta$Fair. \\
+\hline
+Fairness-constrained & 24/24 & 24/24 & \textbf{24/24} & 12/24 & -0.0376 & -0.5509 & 0.0452 & \textbf{0.0151} \\
+Loss-prioritized & \textbf{24/24} & \textbf{24/24} & 12/24 & \textbf{24/24} & \textbf{-0.0407} & \textbf{-0.5876} & \textbf{0.0186} & 0.0038 \\
+Hybrid constrained & \textbf{24/24} & \textbf{24/24} & 23/24 & 13/24 & -0.0377 & -0.5534 & 0.0458 & 0.0144 \\
+\hline
+\end{tabular}%
+}
+\end{table}

@@ -1,0 +1,9 @@
+name,category,implementation_location,official_code_used,third_party_repo,license_checked,status,comparison_role
+round_robin,classical scheduling,scripts/b2croi_v8q_benchmark.py:no external dependency,no,,not_applicable,self-contained implementation,cyclic lower-complexity baseline
+max_aoi,AoI-based scheduling,scripts/b2croi_v8q_benchmark.py:no external dependency,no,,not_applicable,self-contained implementation,age-of-information baseline
+channel_aware_rr,channel-aware scheduling,scripts/b2croi_v8q_benchmark.py:no external dependency,no,,not_applicable,self-contained implementation,burst-aware cyclic baseline
+error_trigger,event-triggered scheduling,scripts/b2croi_v8q_benchmark.py:no external dependency,no,,not_applicable,self-contained implementation,error-threshold baseline
+generic_voi,VoI-inspired scheduling,scripts/b2croi_v8q_benchmark.py:no external dependency,no,,not_applicable,self-contained implementation,value-of-information baseline
+cvoi_sf,constrained VoI/service-floor scheduling,scripts/b2croi_v8q_benchmark.py:no external dependency,no,,not_applicable,self-contained implementation,VoI + safety/service-floor baseline
+ar1_growth_voi,predictive VoI stress-test baseline,scripts/b2croi_v8q_stress_n.py:no external dependency,no,,not_applicable,self-contained implementation,stress-test predictive growth baseline
+oracle,upper-bound reference,scripts/b2croi_v8q_benchmark.py:no external dependency,no,,not_applicable,self-contained implementation,non-causal upper-bound/reference

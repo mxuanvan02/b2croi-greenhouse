@@ -1,0 +1,27 @@
+\begin{table*}[t]
+\centering
+\caption{Technical sensitivity of B2CRoI-H(Q) versus error-triggered scheduling under loss-weight and channel-severity variations. Values are paired mean deltas over six weekly windows; negative RMSE/loss/missed deltas and positive fairness deltas favor B2CRoI-H(Q).}
+\label{tab:technical_sensitivity}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llrrrr}
+\hline
+Setting & Network & RMSE $\Delta$ & Loss $\Delta$ & Missed $\Delta$ (pp) & Fairness $\Delta$ \\
+\hline
+Nominal & burst & 0.0241$\pm$0.0108 & -0.0304$\pm$0.0075 & -0.408$\pm$0.106 & 0.3180$\pm$0.0201 \\
+Nominal & severe burst & 0.0181$\pm$0.0071 & -0.0343$\pm$0.0045 & -0.485$\pm$0.087 & 0.2966$\pm$0.0284 \\
+Missed weight 4 & burst & 0.0243$\pm$0.0108 & -0.0223$\pm$0.0054 & -0.408$\pm$0.106 & 0.3180$\pm$0.0201 \\
+Missed weight 4 & severe burst & 0.0181$\pm$0.0071 & -0.0246$\pm$0.0029 & -0.485$\pm$0.087 & 0.2966$\pm$0.0284 \\
+Missed weight 8 & burst & 0.0253$\pm$0.0113 & -0.0386$\pm$0.0096 & -0.408$\pm$0.106 & 0.3180$\pm$0.0201 \\
+Missed weight 8 & severe burst & 0.0181$\pm$0.0071 & -0.0440$\pm$0.0062 & -0.485$\pm$0.087 & 0.2966$\pm$0.0284 \\
+False-alarm weight 1 & burst & 0.0254$\pm$0.0111 & -0.0283$\pm$0.0070 & -0.411$\pm$0.105 & 0.3180$\pm$0.0201 \\
+False-alarm weight 1 & severe burst & 0.0184$\pm$0.0068 & -0.0330$\pm$0.0047 & -0.496$\pm$0.084 & 0.2966$\pm$0.0284 \\
+False-alarm weight 2 & burst & 0.0243$\pm$0.0108 & -0.0326$\pm$0.0079 & -0.408$\pm$0.106 & 0.3180$\pm$0.0201 \\
+False-alarm weight 2 & severe burst & 0.0172$\pm$0.0063 & -0.0363$\pm$0.0044 & -0.485$\pm$0.087 & 0.2966$\pm$0.0284 \\
+Channel loss x0.8 & burst & 0.0226$\pm$0.0130 & -0.0312$\pm$0.0088 & -0.414$\pm$0.134 & 0.3228$\pm$0.0183 \\
+Channel loss x0.8 & severe burst & 0.0154$\pm$0.0135 & -0.0362$\pm$0.0067 & -0.521$\pm$0.111 & 0.2994$\pm$0.0222 \\
+Channel loss x1.2 & burst & 0.0261$\pm$0.0138 & -0.0296$\pm$0.0066 & -0.397$\pm$0.093 & 0.3150$\pm$0.0194 \\
+Channel loss x1.2 & severe burst & 0.0115$\pm$0.0084 & -0.0333$\pm$0.0047 & -0.474$\pm$0.069 & 0.2998$\pm$0.0214 \\
+\hline
+\end{tabular}%
+}
+\end{table*}

@@ -1,0 +1,15 @@
+\begin{table}[t]
+\centering
+\caption{External validation on the independent Biskra greenhouse dataset. Count columns report cases where B2CRoI-H(Q) is better than error-triggered scheduling; deltas are B2CRoI-H(Q) minus comparator.}
+\label{tab:external_validation}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lrrrrrrrrr}
+\hline
+Variable & Cases & Loss & Missed & Fair. & RMSE & $\Delta$Loss & $\Delta$Missed (pp) & $\Delta$RMSE & $\Delta$Fair. \\
+\hline
+Humidity & 80 & 80/80 & 74/80 & 80/80 & 77/80 & -0.0091 & -0.1317 & 0.0077 & 0.0288 \\
+Temperature & 80 & 80/80 & 79/80 & 80/80 & 80/80 & -0.0116 & -0.1569 & 0.0044 & 0.1033 \\
+\hline
+\end{tabular}%
+}
+\end{table}

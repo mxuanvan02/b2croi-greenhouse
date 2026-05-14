@@ -1,0 +1,24 @@
+\begin{table}[t]
+\centering
+\caption{Metadata ablation for B2CRoI-H(Q). Edge metadata uses local decision-time risk/innovation signals before the bandwidth-limited full refresh; gateway forecast removes that metadata and scores candidates from AR(1) forecasts only. Bold values mark the best online-policy value within each network and metric; the upper-reference row is non-causal context. Lower RMSE, loss, and missed violations are better; higher Jain fairness is better.}
+\label{tab:metadata_ablation}
+\resizebox{0.94\textwidth}{!}{%
+\begin{tabular}{llrrrr}
+\hline
+Network & Variant & RMSE & Loss & Missed (\%) & Jain \\
+\hline
+Burst & Upper-ref. & 0.7858 & 0.0529 & 0.566 & 0.6291 \\
+Burst & Edge metadata & 0.7856 & \textbf{0.0549} & \textbf{0.589} & \textbf{1.0000} \\
+Burst & Gateway forecast & 4.4482 & 2.2567 & 32.132 & 0.9176 \\
+Burst & CVoI-SF & 0.7793 & 0.0839 & 0.961 & 0.9980 \\
+Burst & Error-trigger & \textbf{0.7586} & 0.0873 & 1.042 & 0.6252 \\
+\hline
+Severe burst & Upper-ref. & 0.9969 & 0.1017 & 1.125 & 0.6595 \\
+Severe burst & Edge metadata & 0.9887 & \textbf{0.1063} & \textbf{1.186} & \textbf{1.0000} \\
+Severe burst & Gateway forecast & 3.9160 & 1.7403 & 24.658 & 0.9888 \\
+Severe burst & CVoI-SF & 0.9876 & 0.1360 & 1.586 & 0.9976 \\
+Severe burst & Error-trigger & \textbf{0.9743} & 0.1375 & 1.624 & 0.6520 \\
+\hline
+\end{tabular}%
+}
+\end{table}

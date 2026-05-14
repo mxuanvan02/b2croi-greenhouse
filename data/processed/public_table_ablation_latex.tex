@@ -1,0 +1,20 @@
+\begin{table}[t]
+\centering
+\caption{Full-window ablation and comparator analysis for the hybrid constrained regime over 12 reduced stress cases. Count columns report cases where full B2CRoI-H(Q) is better; deltas are full model minus comparator/ablation.}
+\label{tab:ablation}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lrrrrrrrr}
+\hline
+Comparator or ablation & Loss & Missed & Fair. & RMSE & $\Delta$Loss & $\Delta$Missed (pp) & $\Delta$RMSE & $\Delta$Fair. \\
+\hline
+Error-trigger comparator & 12/12 & 12/12 & 12/12 & 8/12 & -0.0330 & -0.4781 & 0.0376 & 0.0123 \\
+Generic-VoI comparator & 12/12 & 12/12 & 12/12 & 8/12 & -0.0340 & -0.4943 & 0.0388 & 0.0118 \\
+CVoI-SF comparator & 12/12 & 12/12 & 9/12 & 12/12 & -0.0468 & -0.5992 & -0.0393 & 0.0005 \\
+No mode switch & 2/12 & 5/12 & 12/12 & 9/12 & 0.0022 & 0.0215 & 0.0252 & 0.0138 \\
+No constraint bonus & 1/12 & 5/12 & 12/12 & 9/12 & 0.0020 & 0.0177 & 0.0254 & 0.0137 \\
+No burst reliability & 3/12 & 6/12 & 12/12 & 12/12 & 0.0014 & 0.0135 & 0.0078 & 0.0005 \\
+No RMSE cost & 8/12 & 6/12 & 0/12 & 12/12 & -0.0008 & -0.0111 & -0.0121 & -0.0006 \\
+\hline
+\end{tabular}%
+}
+\end{table}

@@ -1,0 +1,73 @@
+{
+  "tables": {
+    "public_table_operating_regimes.csv": {
+      "rows": 3,
+      "columns": [
+        "Operating regime",
+        "Internal policy",
+        "Loss better",
+        "Missed-violation better",
+        "Fairness better",
+        "RMSE $\\Delta\\leq0.05$",
+        "Mean loss $\\Delta$",
+        "Mean missed $\\Delta$ (pp)",
+        "Mean RMSE $\\Delta$",
+        "Mean fairness $\\Delta$"
+      ]
+    },
+    "public_table_safety_calibration.csv": {
+      "rows": 2,
+      "columns": [
+        "Model",
+        "Brier score",
+        "ECE",
+        "Mean predicted",
+        "Observed rate"
+      ]
+    },
+    "public_table_external_validation.csv": {
+      "rows": 2,
+      "columns": [
+        "Variable set",
+        "Cases",
+        "Loss better",
+        "Missed better",
+        "Fairness better",
+        "RMSE $\\Delta\\leq0.05$",
+        "Mean loss $\\Delta$",
+        "Mean missed $\\Delta$ (pp)",
+        "Mean RMSE $\\Delta$",
+        "Mean fairness $\\Delta$"
+      ]
+    },
+    "public_table_ablation.csv": {
+      "rows": 7,
+      "columns": [
+        "Variant",
+        "Loss better",
+        "Missed better",
+        "Fairness better",
+        "RMSE $\\Delta\\leq0.05$",
+        "Mean loss $\\Delta$",
+        "Mean missed $\\Delta$ (pp)",
+        "Mean RMSE $\\Delta$",
+        "Mean fairness $\\Delta$"
+      ]
+    }
+  },
+  "numeric_claims": {
+    "positive_fairness_gain": true,
+    "brier_min": 0.0506159057954556,
+    "brier_max": 0.078291769948408,
+    "external_cases_total": 160
+  },
+  "paper_figures": {
+    "fig_architecture.pdf": 1055956,
+    "fig_mode_switch.pdf": 1771052,
+    "fig_loss_fairness_pareto.tex": 4019,
+    "fig_robustness_grid.pdf": 70978,
+    "fig_external_validation.pdf": 76843
+  },
+  "generated_figures": [],
+  "plot_regeneration": "not_run_or_unavailable"
+}

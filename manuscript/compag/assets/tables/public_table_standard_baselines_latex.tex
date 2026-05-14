@@ -1,0 +1,59 @@
+\begin{table}[t]
+\centering
+\caption{Primary benchmark baseline context under burst and severe-burst packet loss. Bold values mark the best online-policy value within each network and metric; the upper-reference row is shown separately as a non-causal reference. Lower RMSE, safety loss, and missed violations are better; higher Jain fairness is better.}
+\label{tab:standard_baselines}
+\resizebox{0.92\textwidth}{!}{%
+\begin{tabular}{llrrrr}
+\hline
+Network & Policy & RMSE & Loss & Missed (\%) & Jain \\
+\hline
+Burst & Round-robin & 0.9839 & 0.1400 & 1.687 & 1.0000 \\
+Burst & Max-AoI & 0.9229 & 0.1265 & 1.502 & 0.9998 \\
+Burst & Burst-aware cyclic & 0.9431 & 0.1290 & 1.548 & 0.9998 \\
+Burst & Error-trigger & \textbf{0.7586} & 0.0873 & 1.042 & 0.6252 \\
+Burst & Generic VoI & 0.7682 & 0.0875 & 1.042 & 0.6723 \\
+Burst & CVoI-SF & 0.7793 & 0.0839 & 0.961 & 0.9980 \\
+Burst & B2CRoI-H(Q) & 0.7856 & \textbf{0.0549} & \textbf{0.589} & \textbf{1.0000} \\
+Burst & Upper-reference & 0.7858 & 0.0529 & 0.566 & 0.6291 \\
+\hline
+Severe burst & Round-robin & 1.2058 & 0.2059 & 2.476 & 1.0000 \\
+Severe burst & Max-AoI & 1.1230 & 0.1790 & 2.106 & 0.9988 \\
+Severe burst & Burst-aware cyclic & 1.1377 & 0.1872 & 2.228 & 0.9989 \\
+Severe burst & Error-trigger & \textbf{0.9743} & 0.1375 & 1.624 & 0.6520 \\
+Severe burst & Generic VoI & 0.9775 & 0.1386 & 1.639 & 0.7103 \\
+Severe burst & CVoI-SF & 0.9876 & 0.1360 & 1.586 & 0.9976 \\
+Severe burst & B2CRoI-H(Q) & 0.9887 & \textbf{0.1063} & \textbf{1.186} & \textbf{1.0000} \\
+Severe burst & Upper-reference & 0.9969 & 0.1017 & 1.125 & 0.6595 \\
+\hline
+\end{tabular}%
+}
+\end{table}
+
+\begin{table}[t]
+\centering
+\caption{Primary benchmark age-of-information context for the same baselines. Lower average and maximum AoI are better; bold values mark the best online-policy value within each network and metric.}
+\label{tab:standard_baselines_aoi}
+\begin{tabular}{llrr}
+\hline
+Network & Policy & Avg. AoI & Max AoI \\
+\hline
+Burst & Round-robin & 1.61 & 18.2 \\
+Burst & Max-AoI & \textbf{1.46} & \textbf{12.9} \\
+Burst & Burst-aware cyclic & \textbf{1.46} & \textbf{12.9} \\
+Burst & Error-trigger & 12.85 & 155.0 \\
+Burst & Generic VoI & 12.42 & 154.2 \\
+Burst & CVoI-SF & 1.62 & 14.4 \\
+Burst & B2CRoI-H(Q) & 1.82 & 19.9 \\
+Burst & Upper-reference & 12.84 & 154.4 \\
+\hline
+Severe burst & Round-robin & 2.73 & 30.5 \\
+Severe burst & Max-AoI & \textbf{2.41} & \textbf{22.7} \\
+Severe burst & Burst-aware cyclic & \textbf{2.41} & \textbf{22.7} \\
+Severe burst & Error-trigger & 13.52 & 155.4 \\
+Severe burst & Generic VoI & 13.19 & 155.9 \\
+Severe burst & CVoI-SF & 2.59 & 25.5 \\
+Severe burst & B2CRoI-H(Q) & 2.85 & 28.2 \\
+Severe burst & Upper-reference & 13.50 & 155.0 \\
+\hline
+\end{tabular}
+\end{table}
