@@ -1,0 +1,43 @@
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# Local/raw datasets
+# Keep public processed tables, but do not commit downloaded raw data by default.
+data/raw/
+data/external/
+
+# Generated verification outputs
+reproducibility/results/logs/
+reproducibility/results/verification_summary.json
+
+# LaTeX/build artifacts
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.nav
+*.out
+*.run.xml
+*.snm
+*.spl
+*.synctex.gz
+*.toc
+*.xdv
+_build/
+
+# Large/generated packages
+*.zip
+*.tar.gz
