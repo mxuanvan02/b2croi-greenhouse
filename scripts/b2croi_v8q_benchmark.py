@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """B2CRoI-v8Q benchmark: v8 with empirical residual-quantile safety calibration.
 
-Internal rebuild experiment. Public paper text must present the final method as a
-standalone contribution, not as an improvement over prior internal drafts.
+Public reproducibility script for the final B2CRoI-H(Q) method.
 """
 from __future__ import annotations
 from pathlib import Path
@@ -308,7 +307,7 @@ def paired(raw, proposed='b2croi_v8q'):
 
 def parse_args():
     ap=argparse.ArgumentParser(description='Run the official B2CRoI-H(Q) primary benchmark.')
-    ap.add_argument('--n-windows', type=int, default=int(os.getenv('B2CROI_N_WINDOWS','10')), help='Number of weekly evaluation windows after the calibration week. Use -1 for all available windows. Default: 10, matching the manuscript benchmark.')
+    ap.add_argument('--n-windows', type=int, default=int(os.getenv('B2CROI_N_WINDOWS','10')), help='Number of weekly evaluation windows after the calibration week. Use -1 for all available windows. Default: 10, matching the reported benchmark.')
     ap.add_argument('--data-root', default=os.getenv('B2CROI_DATA_ROOT', str(DATA_ROOT)), help='Directory containing the primary raw dataset file: Full Data Set.csv. Default: FINAL/data/raw or B2CROI_DATA_ROOT.')
     return ap.parse_args()
 

@@ -103,7 +103,7 @@ def evaluation_matrix():
             fc='#DBEAFE' if marks[i][j] else '#F1F5F9'
             if i==2 and marks[i][j]: fc='#DCFCE7'
             box(ax,(x0+j*cw,y0-(i+1)*ch),(cw-.12,.58),marks[i][j],fc=fc,fs=8.8)
-    ax.text(6,.35,'Visual message: the manuscript separates primary evidence, stress evidence, and external-validation evidence.',ha='center',fontsize=8,color=GRAY)
+    ax.text(6,.35,'Visual message: the study separates primary evidence, stress evidence, and external-validation evidence.',ha='center',fontsize=8,color=GRAY)
     save(fig,'b2croi_h_evaluation_matrix')
 
 def result_operating_regimes():

@@ -8,7 +8,7 @@ ROOT=Path(__file__).resolve().parents[1]
 EXTERNAL_DATA_ROOT = Path(os.getenv('B2CROI_EXTERNAL_DATA_ROOT', ROOT/'data/external/mendeley_3dw54yhhcc'))
 EXTERNAL_DATA_FILE = os.getenv('B2CROI_EXTERNAL_DATA_FILE', 'Greenhouse climate dataset from 26 to 30-01-2019.xlsx')
 DATA = EXTERNAL_DATA_ROOT / EXTERNAL_DATA_FILE
-OUT=ROOT/'data/processed'; FIG=ROOT/'manuscript/compag/assets/figures'; OUT.mkdir(exist_ok=True,parents=True); FIG.mkdir(exist_ok=True,parents=True)
+OUT=ROOT/'data/processed'; FIG=ROOT/'assets/figures'; OUT.mkdir(exist_ok=True,parents=True); FIG.mkdir(exist_ok=True,parents=True)
 spec=importlib.util.spec_from_file_location('v8q',ROOT/'scripts/b2croi_v8q_benchmark.py')
 v8q=importlib.util.module_from_spec(spec); spec.loader.exec_module(v8q)
 

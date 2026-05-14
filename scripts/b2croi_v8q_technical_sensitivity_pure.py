@@ -17,7 +17,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 RAW = ROOT / "data" / "raw" / "Full Data Set.csv"
 OUT = ROOT / "data" / "processed"
-TABLES = [ROOT / "manuscript" / "compag" / "assets" / "tables", ROOT / "manuscript" / "standalone" / "assets" / "tables"]
+TABLES = [ROOT / "study" / "" / "assets" / "tables", ROOT / "study" / "standalone" / "assets" / "tables"]
 SAFE_MIN, SAFE_MAX = 22.0, 30.0
 RANGE = SAFE_MAX - SAFE_MIN
 COLS = ["Temperature Front", "Temperature Middle", "Temperature Back"]

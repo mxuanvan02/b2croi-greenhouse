@@ -12,7 +12,7 @@ DATA = PROJECT / 'data' / 'processed'
 RESULTS = ROOT / 'results'
 TABLE_OUT = RESULTS / 'tables'
 FIG_OUT = RESULTS / 'figures'
-PAPER_FIG = PROJECT / 'manuscript' / 'compag' / 'assets' / 'figures'
+PAPER_FIG = PROJECT / 'assets' / 'figures'
 
 sys.path.insert(0, str(ROOT / 'src'))
 from b2croi.verify import copy_public_tables, numeric_sanity, verify_files  # noqa: E402
@@ -25,7 +25,7 @@ REQUIRED_TABLES = [
 ]
 
 PAPER_FIGURES = [
-    # Track the assets currently referenced by main_compag_elsarticle.tex.
+    # Track the assets currently referenced by main__elsarticle.tex.
     'fig_architecture.pdf',
     'fig_mode_switch.pdf',
     'fig_loss_fairness_pareto.tex',
@@ -66,7 +66,7 @@ def regenerate_figures_if_available() -> list[str]:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description='Verify B2CRoI-H(Q) public tables, manuscript figures, and optional formal plots.')
+    parser = argparse.ArgumentParser(description='Verify B2CRoI-H(Q) public tables, release figure assets, and optional formal plots.')
     parser.add_argument('--quick', action='store_true', help='Run fast verification checks.')
     parser.add_argument('--with-plots', action='store_true', help='Also regenerate formal matplotlib plots when dependencies are installed.')
     args = parser.parse_args()
@@ -81,7 +81,7 @@ def main() -> None:
         ok(f'External validation cases: {claims["external_cases_total"]}')
         fig_sizes = verify_files([PAPER_FIG / name for name in PAPER_FIGURES])
         for name, size in fig_sizes.items():
-            ok(f'Found manuscript figure {name} ({size} bytes)')
+            ok(f'Found release figure asset {name} ({size} bytes)')
         generated = regenerate_figures_if_available() if args.with_plots else []
     except Exception as exc:
         fail(str(exc))

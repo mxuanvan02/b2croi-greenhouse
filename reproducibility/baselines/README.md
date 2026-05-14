@@ -10,7 +10,7 @@ The current package uses **self-contained baseline implementations** inside the 
 - `../../scripts/b2croi_v8q_stress_n.py`
 - `../../scripts/b2croi_v8_ablation.py`
 
-No official third-party GitHub implementation is currently vendored or executed by the reproducibility pipeline. Therefore, the manuscript should describe these methods as **representative** or **literature-inspired** baselines unless a specific official implementation, commit, and license are added later.
+No official third-party GitHub implementation is currently vendored or executed by the reproducibility pipeline. Therefore, the study should describe these methods as **representative** or **literature-inspired** baselines unless a specific official implementation, commit, and license are added later.
 
 ## Why self-contained baselines?
 
@@ -33,5 +33,5 @@ Avoid unless official implementations are added and verified:
 - `../third_party_sources/sources.lock`: placeholder for future official repositories, commits, and licenses.
 ## Fidelity audit
 
-See `FIDELITY_AUDIT.md` for a conservative method-by-method disclosure. No baseline in this package is claimed to be a 100% official reproduction of a named third-party paper implementation.
+See `FIDELITY_AUDIT.md` for a conservative method-by-method disclosure. No baseline in this package is claimed to be a 100% official reproduction of a named third-party reference implementation.
 

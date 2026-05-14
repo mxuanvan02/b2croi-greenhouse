@@ -10,6 +10,6 @@ If future work adds official baseline code, record the following before use:
 4. license and compatibility check;
 5. local patch status, if any;
 6. command used to reproduce the baseline result;
-7. mapping from original outputs to manuscript metrics.
+7. mapping from original outputs to reported metrics.
 
 Do not clone or execute external code without reviewing the license, environment, and security implications.

@@ -47,7 +47,7 @@ def make_panel(base, N, hetero, seed):
 def fit_ar1(data): return b2.fit_ar1(data)
 
 def run_policy(data,policy,network,seed,start,end,ar,bw):
-    # Reuse b2 internals, which are dimension-generic except fixed safety funcs.
+    # Reuse dimension-generic scoring utilities except fixed safety functions.
     return b2.run(data,policy,network,seed,start,end,ar,bw=bw)
 
 def ci95(x):

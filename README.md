@@ -1,43 +1,90 @@
-# B2CRoI-HQ: Academic Project Repository
+# B2CRoI Greenhouse
 
-This repository contains the manuscript, reproducible scripts, generated data tables, journal template material, and presentation slides for the B2CRoI-HQ greenhouse reliability/safety-factor study.
+Public code and result artifacts for B2CRoI-H(Q), a burst-belief Risk-of-Information scheduler for safety--fairness trade-offs in smart greenhouse sensing.
 
-## Repository structure
+## Repository Layout
 
 ```text
-FINAL/
-├── README.md
-├── README_FINAL.md
-├── data/
-│   ├── raw/
-│   ├── external/
-│   └── processed/
-├── scripts/
-├── manuscript/
-│   ├── compag/
-│   └── standalone/
-├── slides/
-├── journal_templates/
-└── outputs/
-    └── submission/
+scripts/                 Experiment, validation, table, and figure-generation scripts
+reproducibility/         Quick verification, full-run driver, tests, and baseline notes
+data/processed/          Public result tables used by the study
+assets/figures/          Release figure assets checked by the verifier
+assets/tables/           Release table assets
 ```
 
-## Recommended workflow
+Raw third-party datasets are not redistributed here. Download them from their original public records and place them under the paths below.
 
-1. Treat `data/raw/` and `data/external/` as source inputs.
-2. Run scripts from the project root when reproducing tables/figures.
-3. Keep generated CSV/LaTeX tables under `data/processed/`.
-4. Edit manuscript sources under `manuscript/compag/` for journal submission.
-5. Keep presentation materials under `slides/`.
+## Data Setup
 
-## Main artifacts
+Primary dataset:
 
-- Journal submission source: `manuscript/compag/main_compag_template_harv.tex`
-- Compiled journal PDF: `manuscript/compag/main_compag_template_harv.pdf`
-- Standalone manuscript: `manuscript/standalone/main_b2croi_h.tex`
-- Public result tables: `data/processed/public_table_*`
-- Seminar/advisor slides: `slides/`
+```text
+data/raw/Full Data Set.csv
+```
 
-## Git hygiene
+External validation dataset:
 
-LaTeX intermediate files, Python cache files, and packaged archives are ignored via `.gitignore`. Source `.tex`, `.bib`, scripts, figures, CSV tables, and final PDFs remain trackable.
+```text
+data/external/mendeley_3dw54yhhcc/Greenhouse climate dataset from 26 to 30-01-2019.xlsx
+```
+
+Custom locations are supported through environment variables:
+
+```bash
+export B2CROI_DATA_ROOT=/path/to/primary/data/folder
+export B2CROI_EXTERNAL_DATA_ROOT=/path/to/external/data/folder
+export B2CROI_EXTERNAL_DATA_FILE="Greenhouse climate dataset from 26 to 30-01-2019.xlsx"
+```
+
+## Environment
+
+Python 3.10+ is recommended.
+
+```bash
+python3 -m venv .venv
+. .venv/bin/activate
+python3 -m pip install -r reproducibility/requirements.txt
+```
+
+## Quick Verification
+
+```bash
+cd reproducibility
+./run_all.sh
+```
+
+The quick check verifies public result tables, checks required figure assets, copies checked tables into `reproducibility/results/tables/`, and writes `reproducibility/results/verification_summary.json`.
+
+Optional plot regeneration:
+
+```bash
+cd reproducibility
+python3 run_verification.py --quick --with-plots
+```
+
+## Full Reproduction
+
+After placing the raw datasets, run from the repository root:
+
+```bash
+bash reproducibility/run_full_end_to_end.sh
+```
+
+This runs the primary benchmark, ablations, stress tests, sensitivity sweeps, external validation, public table generation, verification, and baseline decision tests. Existing processed outputs are snapshotted before overwrite.
+
+## Main Scripts
+
+- `scripts/b2croi_v8q_benchmark.py`: primary paired benchmark.
+- `scripts/b2croi_v8q_stress_n.py`: network-size and heterogeneity stress tests.
+- `scripts/b2croi_v8q_sensitivity.py`: mode-switch parameter sensitivity.
+- `scripts/b2croi_v8q_alarm_activation.py`: fairness-alarm activation diagnostics.
+- `scripts/b2croi_v8_ablation.py`: method-component ablation.
+- `scripts/b2croi_metadata_ablation.py`: metadata-free scoring ablation.
+- `scripts/second_dataset_validate_mendeley.py`: external greenhouse dataset validation.
+- `scripts/make_public_tables.py`: public table generation.
+
+## Release Notes
+
+- `data/raw/` and `data/external/` are ignored by default because they contain downloaded third-party data.
+- Generated caches, logs, local environments, and archive files are ignored by `.gitignore`.
+- Baseline implementation notes are in `reproducibility/baselines/`.

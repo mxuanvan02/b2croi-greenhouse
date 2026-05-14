@@ -18,7 +18,7 @@ def run_alarm(data, network='burst', seed=2026, start=None, ar=None, bw=1):
     rows=[]
     for k in range(start+1,start+window):
         xt=data[k]
-        # reproduce the score internals needed for alarm logging
+        # Reproduce the score terms needed for alarm logging.
         n=len(a)
         if total_choices <= 0:
             share=np.ones(n)/n

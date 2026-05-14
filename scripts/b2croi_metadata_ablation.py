@@ -16,8 +16,8 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "data" / "processed"
 OUT.mkdir(parents=True, exist_ok=True)
 TABLES = [
-    ROOT / "manuscript" / "compag" / "assets" / "tables" / "public_table_metadata_ablation_latex.tex",
-    ROOT / "manuscript" / "standalone" / "assets" / "tables" / "public_table_metadata_ablation_latex.tex",
+    ROOT / "study" / "" / "assets" / "tables" / "public_table_metadata_ablation_latex.tex",
+    ROOT / "study" / "standalone" / "assets" / "tables" / "public_table_metadata_ablation_latex.tex",
 ]
 
 

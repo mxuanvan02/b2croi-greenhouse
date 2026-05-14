@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Generate optional reviewer-facing decisive plots from processed B2CRoI-H(Q) CSVs.
+"""Generate optional diagnostic decisive plots from processed B2CRoI-H(Q) CSVs.
 
 Outputs PDF+PNG to:
 - reproducibility/results/figures/
-- manuscript/compag/assets/figures/
+- assets/figures/
 
 No values are hand-edited; all plotted values come from CSV files in data/processed.
 """
@@ -16,8 +16,8 @@ ROOT = Path(__file__).resolve().parents[3]
 SRC = ROOT / "data" / "processed"
 OUTS = [
     ROOT / "reproducibility" / "results" / "figures",
-    ROOT / "manuscript" / "compag" / "assets" / "figures",
-    ROOT / "manuscript" / "standalone" / "assets" / "figures",
+    ROOT / "study" / "" / "assets" / "figures",
+    ROOT / "study" / "standalone" / "assets" / "figures",
 ]
 
 

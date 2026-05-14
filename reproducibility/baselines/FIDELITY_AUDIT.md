@@ -6,7 +6,7 @@ Current package status: **no official third-party GitHub baseline implementation
 
 ## Summary table
 
-| Baseline | Fidelity status | Official third-party code used? | Safe manuscript wording | Unsafe wording |
+| Baseline | Fidelity status | Official third-party code used? | Safe public wording | Unsafe wording |
 |---|---|---:|---|---|
 | `round_robin` | exact classical cyclic implementation | No | standard round-robin baseline | official SOTA reproduction |
 | `max_aoi` | exact classical largest-AoI implementation in this simulator | No | largest-AoI baseline | exact reproduction of a specific AoI paper unless cited/audited |
@@ -43,7 +43,7 @@ Recommended wording:
 ### `error_trigger`
 - Implementation: `../../scripts/b2croi_v8q_benchmark.py`.
 - Rule: prioritize loops with larger estimation mismatch/error.
-- Fidelity: representative event/error-triggered baseline, not a named-paper reproduction.
+- Fidelity: representative event/error-triggered baseline, not a named-reference reproduction.
 
 ### `generic_voi`
 - Implementation: `../../scripts/b2croi_v8q_benchmark.py`.
@@ -71,11 +71,11 @@ Before any baseline is described as an official/faithful reproduction, add: orig
 
 ## Option B audit tracking
 
-See `FIDELITY_TARGETS.csv` and `OPTION_B_AUDIT_PLAN.md` for the active paper-faithful reproduction upgrade plan.
+See `FIDELITY_TARGETS.csv` and `OPTION_B_AUDIT_PLAN.md` for the active reference-faithful reproduction upgrade plan.
 
 ## Audit update: source-code and literature findings
 
-- Exact-title repository searches did not identify official GitHub implementations for the audited VoI/event-triggered/channel-aware target papers. The status is therefore `not found/not recorded`, not proof that no repository exists.
-- DOI metadata was corrected in `manuscript/compag/refs.bib` for Ayan et al. 2019 and Wang et al. 2021 according to the audit evidence.
+- Exact-title repository searches did not identify official GitHub implementations for the audited VoI/event-triggered/channel-aware target references. The status is therefore `not found/not recorded`, not proof that no repository exists.
+- DOI metadata was corrected in `study//refs.bib` for Ayan et al. 2019 and Wang et al. 2021 according to the audit evidence.
 - `reproducibility/tests/test_baseline_decisions.py` verifies deterministic behavior for exact classical baselines and documents adapted comparator behavior.
 - `channel_aware_rr` is retained as a representative burst-aware cyclic comparator in the current shared simulator. Its current channel-success term is shared across loops, so it should not be described as a fully per-loop channel-state scheduler.

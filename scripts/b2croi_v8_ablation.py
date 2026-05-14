@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """B2CRoI-v8 benchmark: hybrid mode-switch predictive RoI with service-floor guard.
 
-Internal rebuild experiment. Public paper text must present the final method as a
-standalone contribution, not as an improvement over prior internal drafts.
+Public reproducibility script for the final B2CRoI-H(Q) method.
 """
 from __future__ import annotations
 from pathlib import Path

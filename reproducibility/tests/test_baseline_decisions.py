@@ -2,7 +2,7 @@
 """Deterministic baseline decision tests for the shared B2CRoI-H(Q) simulator.
 
 These tests verify exact-by-definition classical behavior and document adapted
-comparator behavior. They do not claim official third-party paper reproduction.
+comparator behavior. They do not claim official third-party reference reproduction.
 """
 from __future__ import annotations
 import importlib.util

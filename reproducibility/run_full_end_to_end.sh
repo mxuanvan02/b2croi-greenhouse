@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# End-to-end full-window reproduction for B2CRoI-H(Q) COMPAG package.
+# End-to-end full-window reproduction for B2CRoI-H(Q)  package.
 # Run from FINAL/ or FINAL/reproducibility/.
 # This script never deletes old outputs permanently: it snapshots/archives before overwriting.
 set -euo pipefail
