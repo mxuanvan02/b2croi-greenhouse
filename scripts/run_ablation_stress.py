@@ -2,10 +2,10 @@
 from pathlib import Path
 import importlib.util, numpy as np, pandas as pd
 ROOT=Path(__file__).resolve().parents[1]
-spec=importlib.util.spec_from_file_location('b2', ROOT/'scripts/b2croi_v8_ablation.py')
+spec=importlib.util.spec_from_file_location('b2', ROOT/'scripts/run_method_ablation.py')
 b2=importlib.util.module_from_spec(spec); spec.loader.exec_module(b2)
 OUT=ROOT/'data/processed'; OUT.mkdir(exist_ok=True,parents=True)
-POLICIES=['error_trigger','generic_voi','cvoi_sf','b2croi_v8','v8_no_mode','v8_no_constraint_bonus','v8_no_rmse_cost','v8_no_reliability','oracle']
+POLICIES=['error_trigger','generic_voi','cvoi_sf','b2croi_h','h_no_mode','h_no_constraint_bonus','h_no_rmse_cost','h_no_reliability','oracle']
 
 def make_panel(base,N,hetero,seed):
     rng=np.random.default_rng(seed); cols=[]
@@ -40,28 +40,28 @@ def main():
           for wi,st in enumerate(starts):
             for pol in POLICIES:
               r=b2.run(panel,pol,net,5000+wi,st,st+window,ar,bw=bw); r.update(N=N,heterogeneity=hetero,bw=bw); rows.append(r)
-    raw=pd.DataFrame(rows); raw.to_csv(OUT/'b2croi_v8_ablation_stress_raw.csv',index=False)
+    raw=pd.DataFrame(rows); raw.to_csv(OUT/'b2croi_h_ablation_stress_raw.csv',index=False)
     metrics=['rmse_mean','loss_mean','missed_violation_pct','choice_fairness']
     summ=[]
     for keys,sub in raw.groupby(['N','heterogeneity','bw','network','policy']):
         rec=dict(zip(['N','heterogeneity','bw','network','policy'],keys)); rec['n_windows']=len(sub)
         for m in metrics: rec[m+'_mean']=float(sub[m].mean()); rec[m+'_ci95']=ci95(sub[m])
         summ.append(rec)
-    pd.DataFrame(summ).to_csv(OUT/'b2croi_v8_ablation_stress_summary.csv',index=False)
+    pd.DataFrame(summ).to_csv(OUT/'b2croi_h_ablation_stress_summary.csv',index=False)
     pairs=[]
     for (N,het,bw,net),grp in raw.groupby(['N','heterogeneity','bw','network']):
-        p=grp[grp.policy=='b2croi_v8'].sort_values('window_start')
-        for basepol in [x for x in POLICIES if x!='b2croi_v8']:
+        p=grp[grp.policy=='b2croi_h'].sort_values('window_start')
+        for basepol in [x for x in POLICIES if x!='b2croi_h']:
             b=grp[grp.policy==basepol].sort_values('window_start')
             rec={'N':N,'heterogeneity':het,'bw':bw,'network':net,'baseline':basepol,'n_windows':len(p)}
             for m in metrics:
                 d=p[m].to_numpy()-b[m].to_numpy(); rec[m+'_delta_mean']=float(d.mean()); rec[m+'_delta_ci95']=ci95(d)
             pairs.append(rec)
-    paired=pd.DataFrame(pairs); paired.to_csv(OUT/'b2croi_v8_ablation_stress_paired.csv',index=False)
+    paired=pd.DataFrame(pairs); paired.to_csv(OUT/'b2croi_h_ablation_stress_paired.csv',index=False)
     print('rows',len(raw),'summary',len(summ),'paired',len(paired))
-    # Component damage: compare each ablation to full v6 (ablation - full)
-    for basepol in ['v8_no_mode','v8_no_constraint_bonus','v8_no_rmse_cost','v8_no_reliability']:
+    # Component damage: compare each ablation to full method (ablation - full)
+    for basepol in ['h_no_mode','h_no_constraint_bonus','h_no_rmse_cost','h_no_reliability']:
         sub=paired[paired.baseline==basepol]
-        print('\nfull v8 minus',basepol)
+        print('\nfull H minus',basepol)
         print(sub.groupby('N')[['loss_mean_delta_mean','missed_violation_pct_delta_mean','rmse_mean_delta_mean','choice_fairness_delta_mean']].mean().to_string(float_format=lambda x:f'{x:.4f}'))
 if __name__=='__main__': main()

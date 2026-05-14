@@ -9,12 +9,12 @@ def fmt(x, nd=4):
     except Exception: return str(x)
 
 # Table 1: operating regime comparison from final counts
-counts=pd.read_csv(T/'final_v6_v7_v8_stress_case_counts.csv')
+counts=pd.read_csv(T/'operating_regime_case_counts.csv')
 rows=[]
-name_map={'b2croi_v6':'Fairness-constrained','b2croi_v7':'Loss-prioritized','b2croi_v8':'Hybrid constrained'}
+name_map={'fairness_constrained':'Fairness-constrained','loss_prioritized':'Loss-prioritized','b2croi_h':'Hybrid constrained'}
 for _,r in counts.iterrows():
     pol=r.get('policy',r.get('version',''))
-    pol_key={'v6':'b2croi_v6','v7':'b2croi_v7','v8':'b2croi_v8'}.get(pol,pol)
+    pol_key={'fairness_constrained':'fairness_constrained','loss_prioritized':'loss_prioritized','hybrid_constrained':'b2croi_h'}.get(pol,pol)
     rows.append({
         'Operating regime': name_map.get(pol_key,pol),
         'Internal policy': pol_key,
@@ -29,8 +29,8 @@ for _,r in counts.iterrows():
     })
 pd.DataFrame(rows).to_csv(T/'public_table_operating_regimes.csv',index=False)
 
-# Table 2: v8 ablation reduced stress favorable cases
-paired=pd.read_csv(T/'b2croi_v8_ablation_stress_paired.csv')
+# Table 2: H ablation reduced stress favorable cases
+paired=pd.read_csv(T/'b2croi_h_ablation_stress_paired.csv')
 base=[]
 for pol,g in paired.groupby('baseline'):
     if pol=='oracle': continue
@@ -55,7 +55,7 @@ cal[['Model','brier','ece','mean_pred','obs_rate']].rename(columns={'brier':'Bri
 
 # Table 4: external validation
 ext=pd.read_csv(T/'second_dataset_mendeley_case_counts.csv')
-ext=ext[ext.policy=='b2croi_v8q'].copy()
+ext=ext[ext.policy=='b2croi_hq'].copy()
 ext['Variable set']=ext['variable_set'].map({'temperature_inside':'Temperature','humidity_inside':'Humidity'}).fillna(ext['variable_set'])
 ext_out=pd.DataFrame({
     'Variable set': ext['Variable set'],

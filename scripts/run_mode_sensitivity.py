@@ -6,7 +6,7 @@ import argparse
 import os
 import numpy as np
 import pandas as pd
-import b2croi_v8q_benchmark as b8
+import b2croi_hq_benchmark as b8
 
 OUT = b8.OUT
 
@@ -72,7 +72,7 @@ def main():
         for tau,kap in configs:
             rows.extend(run_variant(data,net,tau,kap,starts,ar,bw=1))
     raw=pd.DataFrame(rows)
-    raw.to_csv(OUT/'b2croi_v8q_sensitivity_raw.csv',index=False)
+    raw.to_csv(OUT/'b2croi_hq_sensitivity_raw.csv',index=False)
     metrics=['rmse_mean','loss_mean','missed_violation_pct','choice_fairness']
     out=[]
     for (net,tau,kap),g in raw.groupby(['network','tau_J','kappa_J']):
@@ -81,7 +81,7 @@ def main():
             rec[m+'_mean']=float(g[m].mean()); rec[m+'_ci95']=b8.ci95(g[m])
         out.append(rec)
     summ=pd.DataFrame(out).sort_values(['network','tau_J','kappa_J'])
-    summ.to_csv(OUT/'b2croi_v8q_sensitivity_summary.csv',index=False)
+    summ.to_csv(OUT/'b2croi_hq_sensitivity_summary.csv',index=False)
     print(summ.to_string(index=False,float_format=lambda x:f'{x:.4f}'))
 
 if __name__=='__main__': main()

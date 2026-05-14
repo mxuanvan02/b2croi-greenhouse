@@ -49,19 +49,19 @@ print('[OK] Python dependencies available')
 PY
 
 echo "[STEP] Primary benchmark: full available weekly windows"
-python3 scripts/b2croi_v8q_benchmark.py --n-windows -1
+python3 scripts/run_primary_benchmark.py --n-windows -1
 
 echo "[STEP] Ablation: full available weekly windows"
-python3 scripts/b2croi_v8_ablation.py --n-windows -1
+python3 scripts/run_method_ablation.py --n-windows -1
 
 echo "[STEP] N/heterogeneity stress test: full available weekly windows"
-python3 scripts/b2croi_v8q_stress_n.py --n-windows -1
+python3 scripts/run_network_stress.py --n-windows -1
 
 echo "[STEP] Sensitivity sweep: full available weekly windows"
-python3 scripts/b2croi_v8q_sensitivity.py --n-windows -1
+python3 scripts/run_mode_sensitivity.py --n-windows -1
 
 echo "[STEP] Alarm activation diagnostics"
-python3 scripts/b2croi_v8q_alarm_activation.py
+python3 scripts/run_alarm_diagnostics.py
 
 echo "[STEP] External validation"
 python3 scripts/second_dataset_validate_mendeley.py
@@ -94,13 +94,13 @@ import shutil
 base=Path('data/processed')
 arch=Path('$ARCH_DIR')
 keep={
- 'b2croi_v8q_raw.csv','b2croi_v8q_summary.csv','b2croi_v8q_paired.csv',
- 'b2croi_v8q_stress_n_raw.csv','b2croi_v8q_stress_n_summary.csv','b2croi_v8q_stress_n_paired.csv',
- 'b2croi_v8q_sensitivity_raw.csv','b2croi_v8q_sensitivity_summary.csv',
- 'b2croi_v8q_alarm_activation_raw.csv','b2croi_v8q_alarm_activation_summary.csv',
- 'b2croi_v8_ablation_raw.csv','b2croi_v8_ablation_summary.csv','b2croi_v8_ablation_paired.csv',
- 'b2croi_v8_ablation_stress_raw.csv','b2croi_v8_ablation_stress_summary.csv','b2croi_v8_ablation_stress_paired.csv',
- 'final_v6_v7_v8_summary.csv','final_v6_v7_v8_stress_by_N.csv','final_v6_v7_v8_stress_case_counts.csv',
+ 'b2croi_hq_raw.csv','b2croi_hq_summary.csv','b2croi_hq_paired.csv',
+ 'b2croi_hq_stress_n_raw.csv','b2croi_hq_stress_n_summary.csv','b2croi_hq_stress_n_paired.csv',
+ 'b2croi_hq_sensitivity_raw.csv','b2croi_hq_sensitivity_summary.csv',
+ 'b2croi_hq_alarm_activation_raw.csv','b2croi_hq_alarm_activation_summary.csv',
+ 'b2croi_h_ablation_raw.csv','b2croi_h_ablation_summary.csv','b2croi_h_ablation_paired.csv',
+ 'b2croi_h_ablation_stress_raw.csv','b2croi_h_ablation_stress_summary.csv','b2croi_h_ablation_stress_paired.csv',
+ 'operating_regime_summary.csv','operating_regime_by_network_size.csv','operating_regime_case_counts.csv',
  'residual_quantile_table.csv','safety_probability_calibration_raw.csv','safety_probability_calibration_summary.csv','safety_probability_calibration_bins.csv',
  'second_dataset_mendeley_raw.csv','second_dataset_mendeley_summary.csv','second_dataset_mendeley_paired.csv','second_dataset_mendeley_case_counts.csv',
  'public_table_operating_regimes.csv','public_table_ablation.csv','public_table_safety_calibration.csv','public_table_external_validation.csv',

@@ -3,7 +3,7 @@
 from __future__ import annotations
 import numpy as np
 import pandas as pd
-import b2croi_v8q_benchmark as b8
+import b2croi_hq_benchmark as b8
 
 OUT=b8.OUT
 
@@ -74,7 +74,7 @@ def main():
         for wi,st in enumerate(starts):
             raws.append(run_alarm(data,net,2026+wi,st,ar,bw=1))
     raw=pd.concat(raws,ignore_index=True)
-    raw.to_csv(OUT/'b2croi_v8q_alarm_activation_raw.csv',index=False)
+    raw.to_csv(OUT/'b2croi_hq_alarm_activation_raw.csv',index=False)
     rows=[]
     for (net,st),g in raw.groupby(['network','window_start']):
         rows.append(dict(network=net,window_start=st,n_steps=len(g),
@@ -82,7 +82,7 @@ def main():
             global_dominates_pct=100*g.global_dominates.mean(), local_dominates_pct=100*g.local_dominates.mean(),
             mean_global_alarm=g.global_alarm.mean(), mean_local_alarm=g.local_alarm.mean(), mean_lambda_F=g.lambda_F.mean()))
     summ=pd.DataFrame(rows)
-    summ.to_csv(OUT/'b2croi_v8q_alarm_activation_summary.csv',index=False)
+    summ.to_csv(OUT/'b2croi_hq_alarm_activation_summary.csv',index=False)
     print(summ.to_string(index=False,float_format=lambda x:f'{x:.4f}'))
 
 if __name__=='__main__': main()

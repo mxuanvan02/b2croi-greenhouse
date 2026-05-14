@@ -39,19 +39,19 @@ def label_policy(p):
     return {
         "round_robin":"Round-robin", "max_aoi":"Max-AoI", "channel_aware_rr":"Burst-aware cyclic",
         "error_trigger":"Error-trigger", "generic_voi":"Generic VoI", "cvoi_sf":"CVoI-SF",
-        "b2croi_v8q":"B2CRoI-H(Q)", "oracle":"Upper-ref."
+        "b2croi_hq":"B2CRoI-H(Q)", "oracle":"Upper-ref."
     }.get(p,p)
 
 
 def plot_pareto(plt):
-    data=rows("b2croi_v8q_summary.csv")
+    data=rows("b2croi_hq_summary.csv")
     fig,ax=plt.subplots(figsize=(7.2,4.6))
-    policies=["round_robin","max_aoi","channel_aware_rr","error_trigger","generic_voi","cvoi_sf","b2croi_v8q","oracle"]
+    policies=["round_robin","max_aoi","channel_aware_rr","error_trigger","generic_voi","cvoi_sf","b2croi_hq","oracle"]
     markers={"burst":"o","severe_burst":"s"}
     colors={p:c for p,c in zip(policies,["#6b8e23","#d9802e","#7f7f7f","#b55d60","#9467bd","#17becf","#1f77b4","#2ca02c"])}
     offsets={
         "round_robin":(5,6), "max_aoi":(5,-10), "channel_aware_rr":(5,5), "error_trigger":(5,-12),
-        "generic_voi":(5,6), "cvoi_sf":(5,-10), "b2croi_v8q":(5,7), "oracle":(5,-12),
+        "generic_voi":(5,6), "cvoi_sf":(5,-10), "b2croi_hq":(5,7), "oracle":(5,-12),
     }
     for r in data:
         pol=r["policy"]
@@ -69,11 +69,11 @@ def plot_pareto(plt):
     ax.set_ylabel("Safety loss (lower is better)")
     ax.set_title("Loss--fairness Pareto context")
     ax.grid(True,alpha=.25)
-    save(fig,"b2croi_v8q_loss_fairness_pareto")
+    save(fig,"b2croi_hq_loss_fairness_pareto")
 
 
 def plot_alarm(plt):
-    data=rows("b2croi_v8q_alarm_activation_summary.csv")
+    data=rows("b2croi_hq_alarm_activation_summary.csv")
     agg=defaultdict(lambda:[0,0,0])
     for r in data:
         a=agg[r["network"]]; a[0]+=f(r["global_dominates_pct"]); a[1]+=f(r["local_dominates_pct"]); a[2]+=1
@@ -87,7 +87,7 @@ def plot_alarm(plt):
     ax.set_ylim(0,100)
     ax.set_title("Alarm branch dominance")
     ax.legend(frameon=False,fontsize=8)
-    save(fig,"b2croi_v8q_alarm_activation_bars")
+    save(fig,"b2croi_hq_alarm_activation_bars")
 
 
 def plot_robustness(plt):
@@ -98,8 +98,8 @@ def plot_robustness(plt):
     """
     data=[]
     try:
-        paired=rows("b2croi_v8q_stress_n_paired.csv")
-        data=[r for r in paired if r.get("proposed")=="b2croi_v8q" and r.get("baseline")=="error_trigger"]
+        paired=rows("b2croi_hq_stress_n_paired.csv")
+        data=[r for r in paired if r.get("proposed")=="b2croi_hq" and r.get("baseline")=="error_trigger"]
     except FileNotFoundError:
         data=[]
     hs=["low","medium","high"]
@@ -109,15 +109,15 @@ def plot_robustness(plt):
         for r in data:
             agg[(int(f(r["N"])),r["heterogeneity"])].append(f(r["loss_mean_delta_mean"]))
     else:
-        summary=rows("b2croi_v8q_stress_n_summary.csv")
+        summary=rows("b2croi_hq_stress_n_summary.csv")
         grouped=defaultdict(dict)
         for r in summary:
             key=(int(f(r["N"])), r["heterogeneity"], r.get("bw",""), r["network"])
             grouped[key][r["policy"]]=f(r["loss_mean_mean"])
         Ns=sorted({k[0] for k in grouped})
         for (N,h,bw,net), vals in grouped.items():
-            if "b2croi_v8q" in vals and "error_trigger" in vals:
-                agg[(N,h)].append(vals["b2croi_v8q"]-vals["error_trigger"])
+            if "b2croi_hq" in vals and "error_trigger" in vals:
+                agg[(N,h)].append(vals["b2croi_hq"]-vals["error_trigger"])
     mat=[]
     for N in Ns:
         row=[]
@@ -138,14 +138,14 @@ def plot_robustness(plt):
             v=mat[i][j]
             ax.text(j,i,"NA" if v!=v else f"{v:.3f}",ha="center",va="center",fontsize=8)
     fig.colorbar(im,ax=ax,label="ΔLoss (lower is better)")
-    save(fig,"b2croi_v8q_robustness_grid")
+    save(fig,"b2croi_hq_robustness_grid")
 
 
 def plot_runtime(plt):
-    data=rows("b2croi_v8q_stress_n_summary.csv")
+    data=rows("b2croi_hq_stress_n_summary.csv")
     # runtime not in stress summary; fallback to primary summary if absent.
-    if "runtime_us_mean_mean" not in data[0]: data=rows("b2croi_v8q_summary.csv")
-    pols=["round_robin","max_aoi","error_trigger","generic_voi","cvoi_sf","b2croi_v8q","oracle"]
+    if "runtime_us_mean_mean" not in data[0]: data=rows("b2croi_hq_summary.csv")
+    pols=["round_robin","max_aoi","error_trigger","generic_voi","cvoi_sf","b2croi_hq","oracle"]
     vals=[]
     for p in pols:
         xs=[f(r["runtime_us_mean_mean"]) for r in data if r.get("policy")==p and "runtime_us_mean_mean" in r]
@@ -157,7 +157,7 @@ def plot_runtime(plt):
     ax.set_ylabel("Runtime per decision (µs, log scale)")
     ax.set_title("Online scheduling overhead")
     ax.grid(True,axis="y",alpha=.25)
-    save(fig,"b2croi_v8q_runtime_scalability")
+    save(fig,"b2croi_hq_runtime_scalability")
 
 
 def main():

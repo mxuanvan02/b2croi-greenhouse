@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""B2CRoI-v8 benchmark: hybrid mode-switch predictive RoI with service-floor guard.
+"""B2CRoI-H(Q) benchmark: H with empirical residual-quantile safety calibration.
 
 Public reproducibility script for the final B2CRoI-H(Q) method.
 """
@@ -19,7 +19,7 @@ OUT.mkdir(parents=True, exist_ok=True)
 SAFE_MIN, SAFE_MAX = 22.0, 30.0
 RANGE = SAFE_MAX - SAFE_MIN
 COLS = ['Temperature Front', 'Temperature Middle', 'Temperature Back']
-POLICIES = ['error_trigger','generic_voi','cvoi_sf','b2croi_v8','v8_no_mode','v8_no_constraint_bonus','v8_no_rmse_cost','v8_no_reliability','oracle']
+POLICIES = ['round_robin','max_aoi','channel_aware_rr','error_trigger','generic_voi','cvoi_sf','b2croi_hq','oracle']
 NETWORKS = ['burst','severe_burst']
 
 CHANNELS = {
@@ -80,6 +80,23 @@ def safety_prob(mu,var):
     p_high=1-normal_cdf((SAFE_MAX-mu)/sd)
     return np.clip(p_low+p_high,0,1)
 
+
+EMP_RES = None
+
+def set_emp_residuals(res):
+    global EMP_RES
+    EMP_RES = res
+
+def empirical_safety_prob(mu,var):
+    global EMP_RES
+    if EMP_RES is None:
+        return safety_prob(mu,var)
+    probs=[]
+    for j in range(len(mu)):
+        rr=EMP_RES[:, j % EMP_RES.shape[1]]
+        probs.append(float(np.mean((mu[j]+rr<SAFE_MIN)|(mu[j]+rr>SAFE_MAX))))
+    return np.asarray(probs)
+
 def ar1_growth_score(xh,xt,a,ar):
     alpha,beta,sigma=ar
     growth=sigma*(1-np.power(alpha,2*np.maximum(a,1)))/np.maximum(1e-9,1-alpha**2)
@@ -116,12 +133,12 @@ def _norm01(x):
         return np.zeros_like(x)
     return (x-lo)/(hi-lo)
 
-def b2croi_score(xh,xt,a,ar,pi_bad,dual_f,dual_s,kind,counts,total_choices,h=4, q_s=None, q_f=None, q_e=0.0, variant="b2croi_v8"):
-    # v8: hybrid mode-switch scheduler.
-    # Default mode is v7-like near-oracle predictive loss-gain scheduling.
+def b2croi_score(xh,xt,a,ar,pi_bad,dual_f,dual_s,kind,counts,total_choices,h=4, q_s=None, q_f=None, q_e=0.0, variant="b2croi_hq", tau_J=0.985, kappa_J=35):
+    # H: hybrid mode-switch scheduler.
+    # Default mode is loss-prioritized predictive loss-gain scheduling.
     # Constraint mode activates only when service-floor/fairness debt becomes unsafe.
     mu,var=forecast_stats(xh,a,ar,h=h)
-    pvio=safety_prob(mu,var)
+    pvio=empirical_safety_prob(mu,var)
     psucc=predict_success(pi_bad,kind)
     n=len(a)
     if q_s is None: q_s=0.0
@@ -163,43 +180,44 @@ def b2croi_score(xh,xt,a,ar,pi_bad,dual_f,dual_s,kind,counts,total_choices,h=4, 
     near_best=np.exp(-gap/(abs(best)+1e-9+0.05))
     severe_debt=1/(1+np.exp(-5*(debt_norm-0.72)))
 
-    # Constraint mode intensity is smooth, not a hard hand-tuned branch.
-    # It rises when Jain fairness is low or any service gap is severe.
+    # Hard switch + smooth multiplier: the constrained branch is entered only
+    # after a service-floor condition is violated; the sigmoid values then scale
+    # the strength of the fairness pressure inside that branch.
     fair_now=jain(counts+1e-9)
-    global_fair_alarm=1/(1+np.exp(35*(fair_now-0.985)))
+    global_fair_alarm=1/(1+np.exp(kappa_J*(fair_now-tau_J)))
     local_floor_alarm=float(np.max(severe_debt))
-    mode=np.clip(max(global_fair_alarm,local_floor_alarm),0,1)
-    if variant=="v8_no_mode":
-        mode=0.0
+    switch=float((fair_now < tau_J) or (float(np.max(debt_norm)) > 0.72))
+    mode=switch*np.clip(max(global_fair_alarm,local_floor_alarm),0,1)
 
     reliability=np.clip(psucc,0.25,1.0)
-    if variant=="v8_no_reliability":
-        reliability=np.ones_like(reliability)
     rmse_cost=0.70*_norm01(residual_after)+0.30*_norm01(max_residual_after)
     rmse_relief=_norm01(cur_res)
 
-    # v7-like base: near-oracle loss/RMSE behavior
+    # loss-prioritized base: near-oracle loss/RMSE behavior
     score = reliability*(0.66*loss_norm + 0.14*innovation + 0.10*safety_now + 0.07*pred_risk)
-    score += 0.05*rmse_relief
-    if variant!="v8_no_rmse_cost":
-        score -= 0.05*rmse_cost
+    score += 0.05*rmse_relief - 0.05*rmse_cost
 
     # Constraint add-on only when needed: fairness can override only if loss gap is
     # small or service-floor debt is severe.
     fairness_gate=np.maximum(near_best,severe_debt)
     constraint_bonus= fairness_gate*(0.18*debt_norm + 0.08*np.log1p(np.maximum(q_f,0.0))*debt_norm)
-    if variant!="v8_no_constraint_bonus":
-        score += mode*constraint_bonus
+    score += mode*constraint_bonus
 
     # When in constraint mode, avoid creating large residuals elsewhere.
-    if variant!="v8_no_rmse_cost":
-        score -= mode*0.04*rmse_cost
+    score -= mode*0.04*rmse_cost
     return score
 
-def choose(policy,krel,xt,xh,a,bw,ar,kind,pi_bad,dual_f,dual_s,counts,total_choices,q_s=0.0,q_f=None,q_e=0.0):
+def choose(policy,krel,xt,xh,a,bw,ar,kind,pi_bad,dual_f,dual_s,counts,total_choices,q_s=0.0,q_f=None,q_e=0.0, tau_J=0.985, kappa_J=35):
     M=len(xt)
     if bw>=M: return list(range(M))
     if policy=='round_robin': return [int((krel+j)%M) for j in range(bw)]
+    if policy=='channel_aware_rr':
+        # Burst-aware cyclic baseline: keep cyclic service but prioritize loops with
+        # higher predicted delivery probability under the current GE belief.
+        base=np.array([((krel+j)%M) for j in range(M)])
+        freshness=-np.array([((j-krel)%M) for j in range(M)], dtype=float)/max(M,1)
+        sc=0.70*predict_success(pi_bad,kind)+0.30*_norm01(a)+0.01*freshness
+        return list(np.argsort(sc)[::-1][:bw])
     if policy=='oracle':
         cur,_,_=loss_terms(xt,xh); vals=[]
         for i in range(M):
@@ -213,8 +231,8 @@ def choose(policy,krel,xt,xh,a,bw,ar,kind,pi_bad,dual_f,dual_s,counts,total_choi
     elif policy=='delay_voi': sc=delay_voi(xh,xt,a)
     elif policy=='ar1_growth_voi': sc=ar1_growth_score(xh,xt,a,ar)
     elif policy=='cvoi_sf': sc=gen_voi(xh,xt,a)+0.35*risk(xt)*mismatch(xh,xt)+0.015*a
-    elif policy in ['b2croi_v8','v8_no_mode','v8_no_constraint_bonus','v8_no_rmse_cost','v8_no_reliability']:
-        sc=b2croi_score(xh,xt,a,ar,pi_bad,dual_f,dual_s,kind,counts,total_choices,q_s=q_s,q_f=q_f,q_e=q_e,variant=policy)
+    elif policy=='b2croi_hq':
+        sc=b2croi_score(xh,xt,a,ar,pi_bad,dual_f,dual_s,kind,counts,total_choices,q_s=q_s,q_f=q_f,q_e=q_e,variant='b2croi_hq',tau_J=tau_J,kappa_J=kappa_J)
     else: raise ValueError(policy)
     return list(np.argsort(sc)[::-1][:bw])
 
@@ -272,7 +290,7 @@ def summarize(raw):
         rows.append(rec)
     return pd.DataFrame(rows)
 
-def paired(raw, proposed='b2croi_v8'):
+def paired(raw, proposed='b2croi_hq'):
     metrics=['rmse_mean','loss_mean','missed_violation_pct','choice_fairness','avg_aoi']
     rows=[]
     for net in NETWORKS:
@@ -288,8 +306,8 @@ def paired(raw, proposed='b2croi_v8'):
     return pd.DataFrame(rows)
 
 def parse_args():
-    ap=argparse.ArgumentParser(description='B2CRoI ablation benchmark.')
-    ap.add_argument('--n-windows', type=int, default=int(os.getenv('B2CROI_ABLATION_N_WINDOWS','10')), help='Number of weekly evaluation windows. Use -1 for all available windows. Default: 10.')
+    ap=argparse.ArgumentParser(description='Run the official B2CRoI-H(Q) primary benchmark.')
+    ap.add_argument('--n-windows', type=int, default=int(os.getenv('B2CROI_N_WINDOWS','10')), help='Number of weekly evaluation windows after the calibration week. Use -1 for all available windows. Default: 10, matching the reported benchmark.')
     ap.add_argument('--data-root', default=os.getenv('B2CROI_DATA_ROOT', str(DATA_ROOT)), help='Directory containing the primary raw dataset file: Full Data Set.csv. Default: FINAL/data/raw or B2CROI_DATA_ROOT.')
     return ap.parse_args()
 
@@ -297,32 +315,41 @@ def select_starts(data_len, window, n_windows):
     starts=list(range(window,data_len-window,window))
     return starts if n_windows is None or n_windows < 0 else starts[:n_windows]
 
+def load_numeric_panel(path=FULL, cols=COLS, label='primary benchmark'):
+    df=pd.read_csv(path)
+    numeric=df[cols].apply(pd.to_numeric,errors='coerce')
+    before=len(numeric)
+    clean=numeric.dropna()
+    dropped=before-len(clean)
+    print(f'[{label}] Dropped {dropped} rows during numeric coercion/dropna out of {before} rows ({(100*dropped/before if before else 0):.3f}%).')
+    return clean.to_numpy(float)
+
 def main():
     args=parse_args()
     data_root=Path(args.data_root).expanduser().resolve()
     full=data_root / 'Full Data Set.csv'
     if not full.exists():
         raise FileNotFoundError(f'Primary dataset not found: {full}. Pass --data-root /path/to/dataset_dir or set B2CROI_DATA_ROOT.')
-    print(f'[ablation] Reading dataset: {full}')
-    df=pd.read_csv(full)
-    numeric=df[COLS].apply(pd.to_numeric,errors='coerce')
-    before=len(numeric); clean=numeric.dropna(); dropped=before-len(clean)
-    print(f'[ablation] Dropped {dropped} rows during numeric coercion/dropna out of {before} rows ({(100*dropped/before if before else 0):.3f}%).')
-    data=clean.to_numpy(float)
+    print(f'[primary benchmark] Reading dataset: {full}')
+    data=load_numeric_panel(full)
     window=7*24*12
     ar=fit_ar1(data[:window])
+    # empirical residuals for safety calibration
+    alpha,beta,sigma=ar
+    train=data[:window]
+    set_emp_residuals(train[1:]-(train[:-1]*alpha+beta))
     starts=select_starts(len(data), window, args.n_windows)
-    print(f'[ablation] Evaluation windows: {len(starts)} (n_windows={args.n_windows}).')
+    print(f'[primary benchmark] Evaluation windows: {len(starts)} (n_windows={args.n_windows}).')
     rows=[]
     for net in NETWORKS:
         for wi,st in enumerate(starts):
             for pol in POLICIES:
                 rows.append(run(data,pol,net,2026+wi,st,st+window,ar,bw=1))
     raw=pd.DataFrame(rows); summ=summarize(raw); comp=paired(raw)
-    raw.to_csv(OUT/'b2croi_v8_ablation_raw.csv',index=False)
-    summ.to_csv(OUT/'b2croi_v8_ablation_summary.csv',index=False)
-    comp.to_csv(OUT/'b2croi_v8_ablation_paired.csv',index=False)
+    raw.to_csv(OUT/'b2croi_hq_raw.csv',index=False)
+    summ.to_csv(OUT/'b2croi_hq_summary.csv',index=False)
+    comp.to_csv(OUT/'b2croi_hq_paired.csv',index=False)
     print(summ[['network','policy','rmse_mean_mean','rmse_mean_ci95','loss_mean_mean','loss_mean_ci95','missed_violation_pct_mean','missed_violation_pct_ci95','choice_fairness_mean','choice_fairness_ci95','runtime_us_mean_mean']].sort_values(['network','loss_mean_mean']).to_string(index=False,float_format=lambda x:f'{x:.4f}'))
-    print('\nPaired B2CRoI deltas written to', OUT/'b2croi_v8_ablation_paired.csv')
+    print('\nPaired B2CRoI deltas written to', OUT/'b2croi_hq_paired.csv')
 
 if __name__=='__main__': main()

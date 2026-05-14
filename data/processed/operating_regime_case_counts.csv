@@ -1,0 +1,4 @@
+version,n_cases,loss_better_cases,missed_better_cases,fairness_better_cases,rmse_le_0p03_cases,rmse_le_0p05_cases,rmse_le_0p07_cases,loss_mean_delta_mean_avg,missed_violation_pct_delta_mean_avg,rmse_mean_delta_mean_avg,choice_fairness_delta_mean_avg
+fairness_constrained,24,24,24,24,6,12,23,-0.03756691518984764,-0.5508933768342371,0.04523909956513201,0.015069524420145855
+loss_prioritized,24,24,24,12,22,24,24,-0.040679912902310524,-0.5875972643445762,0.018570513436151816,0.0037997184139907294
+H,24,24,24,23,6,13,23,-0.037745752097837426,-0.55338242502221,0.045801802195335195,0.014435634196647265

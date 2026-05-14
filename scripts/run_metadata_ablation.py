@@ -10,7 +10,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-import b2croi_v8q_benchmark as bench
+import b2croi_hq_benchmark as bench
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "data" / "processed"
@@ -22,7 +22,7 @@ TABLES = [
 
 
 def metadata_free_score(xh, xt, a, ar, pi_bad, dual_f, dual_s, kind, counts, total_choices,
-                        h=4, q_s=None, q_f=None, q_e=0.0, variant="b2croi_v8q",
+                        h=4, q_s=None, q_f=None, q_e=0.0, variant="b2croi_hq",
                         tau_J=0.985, kappa_J=35):
     """B2CRoI score with local current metadata removed from priority scoring."""
     mu, var = bench.forecast_stats(xh, a, ar, h=h)
@@ -92,7 +92,7 @@ def metadata_free_score(xh, xt, a, ar, pi_bad, dual_f, dual_s, kind, counts, tot
 def choose_metadata_free(policy, krel, xt, xh, a, bw, ar, kind, pi_bad, dual_f, dual_s,
                          counts, total_choices, q_s=0.0, q_f=None, q_e=0.0,
                          tau_J=0.985, kappa_J=35):
-    if policy != "b2croi_v8q":
+    if policy != "b2croi_hq":
         return bench.choose(policy, krel, xt, xh, a, bw, ar, kind, pi_bad, dual_f, dual_s,
                             counts, total_choices, q_s=q_s, q_f=q_f, q_e=q_e,
                             tau_J=tau_J, kappa_J=kappa_J)
@@ -167,13 +167,13 @@ def main():
             for wi, st in enumerate(starts):
                 # Main edge-assisted variant and selected context baselines.
                 bench.choose = old_choose
-                for pol in ["oracle", "b2croi_v8q", "cvoi_sf", "error_trigger"]:
+                for pol in ["oracle", "b2croi_hq", "cvoi_sf", "error_trigger"]:
                     rec = bench.run(data, pol, net, 2026 + wi, st, st + window, ar, bw=1)
-                    rec["policy"] = "b2croi_edge_metadata" if pol == "b2croi_v8q" else pol
+                    rec["policy"] = "b2croi_edge_metadata" if pol == "b2croi_hq" else pol
                     rows.append(rec)
                 # Metadata-free ablation.
                 bench.choose = choose_metadata_free
-                rec = bench.run(data, "b2croi_v8q", net, 2026 + wi, st, st + window, ar, bw=1)
+                rec = bench.run(data, "b2croi_hq", net, 2026 + wi, st, st + window, ar, bw=1)
                 rec["policy"] = "b2croi_gateway_forecast"
                 rows.append(rec)
     finally:

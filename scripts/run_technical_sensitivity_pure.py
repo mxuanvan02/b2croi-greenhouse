@@ -258,7 +258,7 @@ def main():
             deltas = {"rmse": [], "loss": [], "missed_pct": [], "fairness": [], "avg_aoi": []}
             for wi, st in enumerate(starts):
                 base = run(data, st, st + window, "error_trigger", net, 8000 + wi, mw, fw, scale, ar)
-                prop = run(data, st, st + window, "b2croi_v8q", net, 8000 + wi, mw, fw, scale, ar)
+                prop = run(data, st, st + window, "b2croi_hq", net, 8000 + wi, mw, fw, scale, ar)
                 rec = {"setting": setting, "network": net, "window": wi}
                 for m in deltas:
                     d = prop[m] - base[m]
@@ -278,7 +278,7 @@ def main():
                 "Fairness CI95": ci95(deltas["fairness"]),
             })
     OUT.mkdir(parents=True, exist_ok=True)
-    with (OUT / "b2croi_v8q_technical_sensitivity_raw.csv").open("w", newline="") as f:
+    with (OUT / "b2croi_hq_technical_sensitivity_raw.csv").open("w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=list(raw_rows[0].keys()))
         w.writeheader(); w.writerows(raw_rows)
     with (OUT / "public_table_technical_sensitivity.csv").open("w", newline="") as f:

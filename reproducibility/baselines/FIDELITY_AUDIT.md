@@ -26,42 +26,42 @@ Recommended wording:
 ## Method-level notes
 
 ### `round_robin`
-- Implementation: `../../scripts/b2croi_v8q_benchmark.py`.
+- Implementation: `../../scripts/run_primary_benchmark.py`.
 - Rule: select loops cyclically according to the bandwidth budget.
 - Fidelity: exact for the standard cyclic scheduling rule.
 
 ### `max_aoi`
-- Implementation: `../../scripts/b2croi_v8q_benchmark.py`.
+- Implementation: `../../scripts/run_primary_benchmark.py`.
 - Rule: prioritize loops with the largest current age of information.
 - Fidelity: exact for largest-age-first scheduling as defined in this simulator; not claimed to match every AoI paper variant.
 
 ### `channel_aware_rr`
-- Implementation: `../../scripts/b2croi_v8q_benchmark.py`.
+- Implementation: `../../scripts/run_primary_benchmark.py`.
 - Rule: retain cyclic service while preferring loops whose channels are in favorable states.
 - Fidelity: representative shared-simulator baseline, not official external-code reproduction.
 
 ### `error_trigger`
-- Implementation: `../../scripts/b2croi_v8q_benchmark.py`.
+- Implementation: `../../scripts/run_primary_benchmark.py`.
 - Rule: prioritize loops with larger estimation mismatch/error.
 - Fidelity: representative event/error-triggered baseline, not a named-reference reproduction.
 
 ### `generic_voi`
-- Implementation: `../../scripts/b2croi_v8q_benchmark.py`.
+- Implementation: `../../scripts/run_primary_benchmark.py`.
 - Rule: rank loops by a generic value-of-information score combining estimation mismatch and age.
 - Fidelity: literature-inspired, not a named official VoI implementation.
 
 ### `cvoi_sf`
-- Implementation: `../../scripts/b2croi_v8q_benchmark.py`.
+- Implementation: `../../scripts/run_primary_benchmark.py`.
 - Rule: extend generic VoI-style scoring with safety/service-floor terms.
 - Fidelity: adapted constrained VoI/service-floor comparator designed for common-simulator fairness; not official CVoI-SF code from a prior paper.
 
 ### `ar1_growth_voi`
-- Implementation: `../../scripts/b2croi_v8q_stress_n.py`.
+- Implementation: `../../scripts/run_network_stress.py`.
 - Rule: predictive growth/VoI-style comparator used in N/heterogeneity stress testing.
 - Fidelity: stress-test representative comparator, not official SOTA reproduction.
 
 ### `oracle`
-- Implementation: `../../scripts/b2croi_v8q_benchmark.py`.
+- Implementation: `../../scripts/run_primary_benchmark.py`.
 - Rule: use realized/privileged information to define an upper-bound-like reference.
 - Fidelity: non-causal reference, not a deployable competitor.
 

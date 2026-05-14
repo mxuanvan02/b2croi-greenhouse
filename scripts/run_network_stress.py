@@ -13,10 +13,10 @@ import argparse
 import os
 import numpy as np, pandas as pd
 ROOT=Path(__file__).resolve().parents[1]
-spec=importlib.util.spec_from_file_location('b2', ROOT/'scripts/b2croi_v8q_benchmark.py')
+spec=importlib.util.spec_from_file_location('b2', ROOT/'scripts/run_primary_benchmark.py')
 b2=importlib.util.module_from_spec(spec); spec.loader.exec_module(b2)
 OUT=ROOT/'data/processed'; OUT.mkdir(parents=True,exist_ok=True)
-POLICIES=['error_trigger','generic_voi','ar1_growth_voi','cvoi_sf','b2croi_v8q','oracle']
+POLICIES=['error_trigger','generic_voi','ar1_growth_voi','cvoi_sf','b2croi_hq','oracle']
 
 def make_panel(base, N, hetero, seed):
     rng=np.random.default_rng(seed)
@@ -76,7 +76,7 @@ def main():
               r=run_policy(panel,pol,net,3000+wi,st,st+window,ar,bw=bw)
               r.update(N=N,heterogeneity=hetero,bw=bw)
               rows.append(r)
-    raw=pd.DataFrame(rows); raw.to_csv(OUT/'b2croi_v8q_stress_n_raw.csv',index=False)
+    raw=pd.DataFrame(rows); raw.to_csv(OUT/'b2croi_hq_stress_n_raw.csv',index=False)
     metrics=['rmse_mean','loss_mean','missed_violation_pct','choice_fairness','avg_aoi']
     summ=[]
     for keys,sub in raw.groupby(['N','heterogeneity','bw','network','policy']):
@@ -84,11 +84,11 @@ def main():
         for m in metrics:
             rec[m+'_mean']=float(sub[m].mean()); rec[m+'_ci95']=ci95(sub[m])
         summ.append(rec)
-    summ=pd.DataFrame(summ); summ.to_csv(OUT/'b2croi_v8q_stress_n_summary.csv',index=False)
+    summ=pd.DataFrame(summ); summ.to_csv(OUT/'b2croi_hq_stress_n_summary.csv',index=False)
     # paired b2croi vs key baselines
     pairs=[]
     for (N,het,bw,net),grp in raw.groupby(['N','heterogeneity','bw','network']):
-        p=grp[grp.policy=='b2croi_v8q'].sort_values('window_start')
+        p=grp[grp.policy=='b2croi_hq'].sort_values('window_start')
         for basepol in ['error_trigger','generic_voi','cvoi_sf','oracle']:
             b=grp[grp.policy==basepol].sort_values('window_start')
             rec={'N':N,'heterogeneity':het,'bw':bw,'network':net,'baseline':basepol,'n_windows':len(p)}
@@ -96,7 +96,7 @@ def main():
                 d=p[m].to_numpy()-b[m].to_numpy()
                 rec[m+'_delta_mean']=float(d.mean()); rec[m+'_delta_ci95']=ci95(d)
             pairs.append(rec)
-    paired=pd.DataFrame(pairs); paired.to_csv(OUT/'b2croi_v8q_stress_n_paired.csv',index=False)
+    paired=pd.DataFrame(pairs); paired.to_csv(OUT/'b2croi_hq_stress_n_paired.csv',index=False)
     print('Summary rows', len(summ), 'paired rows', len(paired))
     show=paired[paired.baseline=='error_trigger'][['N','heterogeneity','network','loss_mean_delta_mean','missed_violation_pct_delta_mean','rmse_mean_delta_mean','choice_fairness_delta_mean']]
     print(show.to_string(index=False,float_format=lambda x:f'{x:.4f}'))

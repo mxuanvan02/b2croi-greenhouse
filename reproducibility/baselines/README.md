@@ -6,9 +6,9 @@ This directory documents the comparison methods used by the B2CRoI-H(Q) reproduc
 
 The current package uses **self-contained baseline implementations** inside the shared simulator, mainly in:
 
-- `../../scripts/b2croi_v8q_benchmark.py`
-- `../../scripts/b2croi_v8q_stress_n.py`
-- `../../scripts/b2croi_v8_ablation.py`
+- `../../scripts/run_primary_benchmark.py`
+- `../../scripts/run_network_stress.py`
+- `../../scripts/run_method_ablation.py`
 
 No official third-party GitHub implementation is currently vendored or executed by the reproducibility pipeline. Therefore, the study should describe these methods as **representative** or **literature-inspired** baselines unless a specific official implementation, commit, and license are added later.
 

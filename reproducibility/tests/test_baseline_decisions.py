@@ -11,7 +11,7 @@ from pathlib import Path
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[2]
-SPEC = importlib.util.spec_from_file_location("b2", ROOT / "scripts" / "b2croi_v8q_benchmark.py")
+SPEC = importlib.util.spec_from_file_location("b2", ROOT / "scripts" / "run_primary_benchmark.py")
 b2 = importlib.util.module_from_spec(SPEC)
 assert SPEC.loader is not None
 SPEC.loader.exec_module(b2)

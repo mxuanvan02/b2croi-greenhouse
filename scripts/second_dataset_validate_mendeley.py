@@ -9,10 +9,10 @@ EXTERNAL_DATA_ROOT = Path(os.getenv('B2CROI_EXTERNAL_DATA_ROOT', ROOT/'data/exte
 EXTERNAL_DATA_FILE = os.getenv('B2CROI_EXTERNAL_DATA_FILE', 'Greenhouse climate dataset from 26 to 30-01-2019.xlsx')
 DATA = EXTERNAL_DATA_ROOT / EXTERNAL_DATA_FILE
 OUT=ROOT/'data/processed'; FIG=ROOT/'assets/figures'; OUT.mkdir(exist_ok=True,parents=True); FIG.mkdir(exist_ok=True,parents=True)
-spec=importlib.util.spec_from_file_location('v8q',ROOT/'scripts/b2croi_v8q_benchmark.py')
-v8q=importlib.util.module_from_spec(spec); spec.loader.exec_module(v8q)
+spec=importlib.util.spec_from_file_location('Hq',ROOT/'scripts/run_primary_benchmark.py')
+Hq=importlib.util.module_from_spec(spec); spec.loader.exec_module(Hq)
 
-POLICIES=['oracle','error_trigger','generic_voi','cvoi_sf','b2croi_v8q']
+POLICIES=['oracle','error_trigger','generic_voi','cvoi_sf','b2croi_hq']
 NETWORKS=['burst','severe_burst']
 COLSETS={
  'temperature_inside':['Tin1','Tin2','Tout'],
@@ -24,7 +24,7 @@ SAFES={
 }
 
 def patch_safety(lo,hi,cols):
-    v8q.SAFE_MIN=lo; v8q.SAFE_MAX=hi; v8q.RANGE=hi-lo; v8q.COLS=cols
+    Hq.SAFE_MIN=lo; Hq.SAFE_MAX=hi; Hq.RANGE=hi-lo; Hq.COLS=cols
 
 def parse_args():
     ap=argparse.ArgumentParser(description='Run external validation for B2CRoI-H(Q).')
@@ -45,9 +45,9 @@ def run_colset(name,cols,lo,hi):
     patch_safety(lo,hi,cols)
     data=prep_data(cols)
     train_end=min(2*24*60, len(data)//2)
-    ar=v8q.fit_ar1(data[:train_end])
+    ar=Hq.fit_ar1(data[:train_end])
     alpha,beta,sigma=ar; train=data[:train_end]
-    v8q.set_emp_residuals(train[1:]-(train[:-1]*alpha+beta))
+    Hq.set_emp_residuals(train[1:]-(train[:-1]*alpha+beta))
     # evaluate validation days 3-5, in daily windows
     win=24*60; starts=list(range(train_end, len(data)-win, win))
     rows=[]
@@ -55,7 +55,7 @@ def run_colset(name,cols,lo,hi):
       for seed in range(20):
         for si,st in enumerate(starts):
           for pol in POLICIES:
-            m=v8q.run(data,pol,network,seed,st,st+win,ar,bw=1)
+            m=Hq.run(data,pol,network,seed,st,st+win,ar,bw=1)
             m.update({'dataset':'mendeley_3dw54yhhcc','variable_set':name,'safe_min':lo,'safe_max':hi,'network':network,'seed':seed,'window':si,'policy':pol})
             rows.append(m)
     raw=pd.DataFrame(rows)
@@ -73,7 +73,7 @@ def summarize(raw):
 def paired(raw):
     base=raw[raw.policy=='error_trigger'].set_index(['variable_set','network','seed','window'])
     rows=[]
-    for pol in ['b2croi_v8q','cvoi_sf','generic_voi']:
+    for pol in ['b2croi_hq','cvoi_sf','generic_voi']:
       cur=raw[raw.policy==pol].set_index(['variable_set','network','seed','window'])
       idx=cur.index.intersection(base.index)
       for key in idx:

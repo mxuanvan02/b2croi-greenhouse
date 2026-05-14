@@ -74,12 +74,12 @@ This runs the primary benchmark, ablations, stress tests, sensitivity sweeps, ex
 
 ## Main Scripts
 
-- `scripts/b2croi_v8q_benchmark.py`: primary paired benchmark.
-- `scripts/b2croi_v8q_stress_n.py`: network-size and heterogeneity stress tests.
-- `scripts/b2croi_v8q_sensitivity.py`: mode-switch parameter sensitivity.
-- `scripts/b2croi_v8q_alarm_activation.py`: fairness-alarm activation diagnostics.
-- `scripts/b2croi_v8_ablation.py`: method-component ablation.
-- `scripts/b2croi_metadata_ablation.py`: metadata-free scoring ablation.
+- `scripts/run_primary_benchmark.py`: primary paired benchmark.
+- `scripts/run_network_stress.py`: network-size and heterogeneity stress tests.
+- `scripts/run_mode_sensitivity.py`: mode-switch parameter sensitivity.
+- `scripts/run_alarm_diagnostics.py`: fairness-alarm activation diagnostics.
+- `scripts/run_method_ablation.py`: method-component ablation.
+- `scripts/run_metadata_ablation.py`: metadata-free scoring ablation.
 - `scripts/second_dataset_validate_mendeley.py`: external greenhouse dataset validation.
 - `scripts/make_public_tables.py`: public table generation.
 
